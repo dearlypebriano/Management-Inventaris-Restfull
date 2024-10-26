@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS provinces (
+    id CHAR(2) SERIAL PRIMARY KEY,
+    name VARCHAR(255)
+);

@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS token (
+    id SERIAL PRIMARY KEY,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    token_type VARCHAR(50) NOT NULL DEFAULT 'BEARER',
+    revoked BOOLEAN NOT NULL,
+    expired BOOLEAN NOT NULL,
+    user_id VARCHAR(36),
+    FOREIGN KEY (user_id) REFERENCES _user(id)
+);

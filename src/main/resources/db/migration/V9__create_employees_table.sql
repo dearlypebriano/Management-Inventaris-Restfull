@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS employees (
+    id VARCHAR(36) SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255) NOT NULL,
+    nip INTEGER UNIQUE NOT NULL,
+    phone BIGINT DEFAULT 0 NOT NULL,
+    salary NUMERIC(38, 2) NOT NULL,
+    gender_id INT,
+    job_id VARCHAR(36),
+    province_id CHAR(2),
+    regency_id CHAR(4),
+    district_id CHAR(7),
+    village_id VARCHAR(10),
+    postal_code INTEGER,
+    image_url VARCHAR(255),
+    FOREIGN KEY (gender_id) REFERENCES gender(id),
+    FOREIGN KEY (job_id) REFERENCES jobs(id),
+    FOREIGN KEY (province_id) REFERENCES provinces(id),
+    FOREIGN KEY (regency_id) REFERENCES regencies(id),
+    FOREIGN KEY (district_id) REFERENCES districts(id),
+    FOREIGN KEY (village_id) REFERENCES villages(id)
+);

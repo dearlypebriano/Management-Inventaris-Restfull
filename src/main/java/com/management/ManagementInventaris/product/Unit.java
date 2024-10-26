@@ -1,0 +1,31 @@
+package com.management.ManagementInventaris.product;
+
+public enum Unit {
+    Pcs,
+    Kg,
+    L,
+    M,
+    Paket,
+    Box,
+    Set,
+    Lembaran,
+    Pack,
+    Gram,
+    Ounce,
+    Pound,
+    Ton,
+    Inch,
+    Feet,
+    Yard,
+    Mile,
+    Cup,
+    Tablespoon,
+    Teaspoon,
+    Can,
+    Bottle,
+    Gallon,
+    Liter,
+    Milliliter,
+    CubicCentimeter,
+    CubicMeter
+}
