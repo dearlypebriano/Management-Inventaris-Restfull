@@ -155,14 +155,14 @@ public class ProductController {
 
     @GetMapping(path = "/findById/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductResponse> getProductById(@PathVariable String productId) {
-        String decryptedProductId;
+        String decryptedProductIdFromEnc;
         try {
-            decryptedProductId = Cryptographic.decrypt(productId);
+            decryptedProductIdFromEnc = Cryptographic.decrypt(productId);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
         User user = userDetailToken.dataUserEmail();
-        ProductResponse productResponse = productService.getProductById(decryptedProductId, user);
+        ProductResponse productResponse = productService.getProductById(decryptedProductIdFromEnc, user);
         return ResponseEntity.status(HttpStatus.OK).body(productResponse);
     }
 
