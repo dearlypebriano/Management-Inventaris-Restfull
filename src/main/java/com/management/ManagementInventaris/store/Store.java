@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -62,6 +64,9 @@ public class Store implements Serializable {
 
     @Column(name = "timezone_label", nullable = false)
     private String timezoneLabel;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StoreAccounting> storeAccountings = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

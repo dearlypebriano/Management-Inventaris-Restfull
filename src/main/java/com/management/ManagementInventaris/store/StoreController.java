@@ -33,18 +33,11 @@ public class StoreController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @PatchMapping(path = "/update/{storeId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StoreResponse> updateStore(
-            @PathVariable String storeId,
             @RequestBody StoreRequest request
     ) {
-        String decryptedStoreId;
-        try {
-            decryptedStoreId = Cryptographic.decrypt(storeId);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-        StoreResponse response = storeService.updateStore(decryptedStoreId, request);
+        StoreResponse response = storeService.updateStore(request);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -56,17 +49,10 @@ public class StoreController {
         return ResponseEntity.status(200).body(response);
     }
 
-    @DeleteMapping(path = "/delete/{storeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteStore(
-            @PathVariable String storeId
     ) {
-        String decryptedStoreId;
-        try {
-            decryptedStoreId = Cryptographic.decrypt(storeId);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
-        storeService.deleteStore(decryptedStoreId);
+        storeService.deleteStore();
         return ResponseEntity.status(204).build();
     }
 

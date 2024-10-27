@@ -92,11 +92,14 @@ public class StoreService {
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
     @CachePut(value = "store", key = "#result.id")
-    public StoreResponse updateStore(String storeId, StoreRequest request) {
+    public StoreResponse updateStore(StoreRequest request) {
         User user = userDetailToken.dataUserEmail();
 
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeId + " does not exist"));
+        Store storeEmailUser = storeRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store for " + user.displayName() + " not found"));
+
+        Store store = storeRepository.findById(storeEmailUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeEmailUser.getId() + " does not exist"));
 
         if (!store.getUser().getEmail().equals(user.getEmail()) && !(user.getRole().name().equals(Role.ADMIN) || user.getRole().name().equals(Role.MANAGER))) throw new IllegalStateException("You cannot update the store!");
 
@@ -112,11 +115,14 @@ public class StoreService {
 
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
-    public void deleteStore(String storeId) {
+    public void deleteStore() {
         User user = userDetailToken.dataUserEmail();
 
-        Store store = storeRepository.findById(storeId)
-               .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeId + " does not exist"));
+        Store storeEmailUser = storeRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store for " + user.displayName() + " not found"));
+
+        Store store = storeRepository.findById(storeEmailUser.getId())
+               .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeEmailUser.getId() + " does not exist"));
 
         if (!store.getUser().getEmail().equals(user.getEmail()) || user.getRole().name().equals(Role.USER)) throw new IllegalArgumentException("User with email " + user.getEmail() + " does not author in the store");
 
@@ -190,9 +196,11 @@ public class StoreService {
         Store store = storeRepository.findByUserEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Tidak ada store terkait dengan email ini"));
 
+        StoreAccounting storeAccounting = storeAccountingRepository.findByStore(store)
+                .orElseThrow(() -> new IllegalArgumentException("Store accounting not found for this store"));
+
         if (!store.getUser().getEmail().equals(user.getEmail())) throw new IllegalArgumentException("This store not for you");
 
-        StoreAccounting storeAccounting  = new StoreAccounting();
         if (dailyIncome != 0) storeAccounting.setDailyIncome(dailyIncome);
         storeAccountingRepository.save(storeAccounting);
 
