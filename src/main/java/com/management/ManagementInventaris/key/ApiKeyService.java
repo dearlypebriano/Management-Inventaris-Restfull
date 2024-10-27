@@ -36,17 +36,6 @@ public class ApiKeyService {
         return apiKey;
     }
 
-    public String getValidApiKey() {
-        LocalDateTime now = LocalDateTime.now();
-        ApiKey existingKey = apiKeyRepository.findLatestValidKey(now);
-
-        if (existingKey != null && !existingKey.getExpired()) {
-            return existingKey.getKey();
-        } else {
-            return generateUniqueApiKey();
-        }
-    }
-
     private String generateApiKey() {
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
