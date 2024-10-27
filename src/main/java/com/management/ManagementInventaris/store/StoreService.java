@@ -21,14 +21,12 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -67,8 +65,8 @@ public class StoreService {
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
     @CachePut(value = "store", key = "#result.id")
-    public StoreResponse createNewStore(StoreRequest request, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public StoreResponse createNewStore(StoreRequest request) {
+        User user = userDetailToken.dataUserEmail();
         Province province = provinceService.findByName(user.getProvince().getName());
         Regency regency = regencyService.findByNames(province.getName(), user.getRegency().getName());
         District district = districtService.findDistrictByNames(province.getName(), regency.getName(), user.getDistrict().getName());
@@ -94,8 +92,8 @@ public class StoreService {
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
     @CachePut(value = "store", key = "#result.id")
-    public StoreResponse updateStore(String storeId, StoreRequest request, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public StoreResponse updateStore(String storeId, StoreRequest request) {
+        User user = userDetailToken.dataUserEmail();
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeId + " does not exist"));
@@ -114,8 +112,8 @@ public class StoreService {
 
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
-    public void deleteStore(String storeId, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public void deleteStore(String storeId) {
+        User user = userDetailToken.dataUserEmail();
 
         Store store = storeRepository.findById(storeId)
                .orElseThrow(() -> new IllegalArgumentException("Store with id " + storeId + " does not exist"));
@@ -163,8 +161,8 @@ public class StoreService {
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
     @CachePut(value = "store", key = "'storeAccounting:' + #result.id")
-    public StoreAccountingResponse recordDailyIncome(double dailyIncome, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public StoreAccountingResponse recordDailyIncome(double dailyIncome) {
+        User user = userDetailToken.dataUserEmail();
         Store store = storeRepository.findByUserEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Tidak ada store terkait dengan email ini"));
 
@@ -187,8 +185,8 @@ public class StoreService {
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
     @CachePut(value = "store", key = "'storeAccounting:' + #result.id")
-    public StoreAccountingResponse updateRecordDailyIncome(double dailyIncome, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public StoreAccountingResponse updateRecordDailyIncome(double dailyIncome) {
+        User user = userDetailToken.dataUserEmail();
         Store store = storeRepository.findByUserEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Tidak ada store terkait dengan email ini"));
 
@@ -206,8 +204,8 @@ public class StoreService {
 
     @Transactional
     @CacheEvict(value = "store", allEntries = true)
-    public void deleteStoreAccounting(String storeAccountingId, Principal connectedUser) {
-        User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+    public void deleteStoreAccounting(String storeAccountingId) {
+        User user = userDetailToken.dataUserEmail();
         StoreAccounting storeAccounting = storeAccountingRepository.findById(storeAccountingId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Store accounting not found"));
 

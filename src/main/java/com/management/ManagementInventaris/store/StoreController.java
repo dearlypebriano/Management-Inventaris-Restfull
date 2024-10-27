@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.GeneralSecurityException;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -20,27 +19,24 @@ public class StoreController {
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<StoreResponse> createNewStore(
-            @ModelAttribute StoreRequest request,
-            Principal connectedUser
+            @ModelAttribute StoreRequest request
     ) {
-        StoreResponse response = storeService.createNewStore(request, connectedUser);
+        StoreResponse response = storeService.createNewStore(request);
         return ResponseEntity.status(201).body(response);
     }
 
     @PostMapping(path = "/store-accounting")
     public ResponseEntity<StoreAccountingResponse> recordDailyIncome(
-            @RequestParam double dailyIncome,
-            Principal connectedUser
+            @RequestParam double dailyIncome
     ) {
-        StoreAccountingResponse response = storeService.recordDailyIncome(dailyIncome, connectedUser);
+        StoreAccountingResponse response = storeService.recordDailyIncome(dailyIncome);
         return ResponseEntity.status(200).body(response);
     }
 
     @PatchMapping(path = "/update/{storeId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StoreResponse> updateStore(
             @PathVariable String storeId,
-            @RequestBody StoreRequest request,
-            Principal connectedUser
+            @RequestBody StoreRequest request
     ) {
         String decryptedStoreId;
         try {
@@ -48,23 +44,21 @@ public class StoreController {
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-        StoreResponse response = storeService.updateStore(decryptedStoreId, request, connectedUser);
+        StoreResponse response = storeService.updateStore(decryptedStoreId, request);
         return ResponseEntity.status(200).body(response);
     }
 
     @PatchMapping(path = "/update/store-accounting", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StoreAccountingResponse> updateRecordDailyIncome(
-            @RequestParam double dailyIncome,
-            Principal connectedUser
+            @RequestParam double dailyIncome
     ) {
-        StoreAccountingResponse response = storeService.updateRecordDailyIncome(dailyIncome, connectedUser);
+        StoreAccountingResponse response = storeService.updateRecordDailyIncome(dailyIncome);
         return ResponseEntity.status(200).body(response);
     }
 
     @DeleteMapping(path = "/delete/{storeId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteStore(
-            @PathVariable String storeId,
-            Principal connectedUser
+            @PathVariable String storeId
     ) {
         String decryptedStoreId;
         try {
@@ -72,14 +66,13 @@ public class StoreController {
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-        storeService.deleteStore(decryptedStoreId, connectedUser);
+        storeService.deleteStore(decryptedStoreId);
         return ResponseEntity.status(204).build();
     }
 
     @DeleteMapping(path = "/delete/store-accounting", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteStoreAccounting(
-            @RequestParam String storeAccountingId,
-            Principal connectedUser
+            @RequestParam String storeAccountingId
     ) {
         String decryptedStoreAccountingId;
         try {
@@ -87,7 +80,7 @@ public class StoreController {
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-        storeService.deleteStoreAccounting(decryptedStoreAccountingId, connectedUser);
+        storeService.deleteStoreAccounting(decryptedStoreAccountingId);
         return ResponseEntity.status(204).build();
     }
 
