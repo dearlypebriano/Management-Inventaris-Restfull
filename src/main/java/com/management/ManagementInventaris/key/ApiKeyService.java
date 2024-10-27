@@ -47,27 +47,6 @@ public class ApiKeyService {
         }
     }
 
-    public boolean isValidApiKey(String apiKey) {
-        LocalDateTime now = LocalDateTime.now();
-        Optional<ApiKey> apiKeyOptional = apiKeyRepository.findByKey(apiKey);
-
-        if (apiKeyOptional.isPresent()) {
-            ApiKey key = apiKeyOptional.get();
-            if (key.getExpirationDate().isBefore(now) || key.getExpired()) {
-                key.setExpired(true);
-                apiKeyRepository.save(key);
-                apiKeyRepository.delete(key);
-
-                generateUniqueApiKey();
-                return false;
-            }
-
-            return !key.getExpired() && key.getExpirationDate().isAfter(now);
-        }
-
-        return false;
-    }
-
     private String generateApiKey() {
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
