@@ -4,6 +4,7 @@ import com.management.ManagementInventaris.location.district.District;
 import com.management.ManagementInventaris.location.province.Province;
 import com.management.ManagementInventaris.location.regency.Regency;
 import com.management.ManagementInventaris.location.village.Village;
+import com.management.ManagementInventaris.store.review.ReviewStore;
 import com.management.ManagementInventaris.user.User;
 import com.management.ManagementInventaris.utils.DateTimeUtil;
 import com.management.ManagementInventaris.utils.Zone;
@@ -67,6 +68,9 @@ public class Store implements Serializable {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StoreAccounting> storeAccountings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReviewStore> reviews = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

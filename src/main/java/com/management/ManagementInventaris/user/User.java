@@ -6,6 +6,8 @@ import com.management.ManagementInventaris.location.district.District;
 import com.management.ManagementInventaris.location.province.Province;
 import com.management.ManagementInventaris.location.regency.Regency;
 import com.management.ManagementInventaris.location.village.Village;
+import com.management.ManagementInventaris.store.review.ReviewRating;
+import com.management.ManagementInventaris.store.review.ReviewStore;
 import com.management.ManagementInventaris.token.Token;
 import com.management.ManagementInventaris.utils.DateTimeUtil;
 import com.management.ManagementInventaris.utils.Zone;
@@ -13,10 +15,7 @@ import jakarta.persistence.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -144,6 +143,12 @@ public class User implements UserDetails {
     @Column(name = "timezone_label", nullable = false)
     private String timezoneLabel;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReviewStore> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ReviewRating> givenRatings = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
@@ -168,8 +173,7 @@ public class User implements UserDetails {
 
     @PreUpdate
     protected void onUpdate() {
-        String dateTime = DateTimeUtil.getCurrentDateTime(ZoneId.systemDefault());
-        this.updatedAt = dateTime;
+        this.updatedAt = DateTimeUtil.getCurrentDateTime(ZoneId.systemDefault());
     }
 
     @Override
