@@ -55,4 +55,10 @@ public class EmailServiceImpl implements EmailService {
             return "Error while sending mail" + e;
         }
     }
+
+    @Override
+    public String sendApiKeyToEmail(EmailDetails details) {
+
+        return "";
+    }
 }

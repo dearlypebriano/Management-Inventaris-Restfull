@@ -186,8 +186,14 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         saveUserToken(savedUser, jwtToken);
+        String encryptedEmail = "";
+        try {
+            encryptedEmail = Cryptographic.encrypt(user.getEmail());
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
 
-        addTokenToCookie(response, jwtToken, refreshToken);
+        addTokenToCookie(response, jwtToken, refreshToken, encryptedEmail);
 
         AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
         redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
@@ -260,8 +266,13 @@ public class AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-
-        addTokenToCookie(response, jwtToken, refreshToken);
+        String encryptedEmail = "";
+        try {
+            encryptedEmail = Cryptographic.encrypt(user.getEmail());
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+        addTokenToCookie(response, jwtToken, refreshToken, encryptedEmail);
 
         AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
         redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
@@ -269,6 +280,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .encryptedEmail(encryptedEmail)
                 .build();
     }
 
@@ -325,7 +337,13 @@ public class AuthenticationService {
                 var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
                 saveUserToken(user, accessToken);
-                addTokenToCookie(response, accessToken, refreshToken);
+                String encryptedEmail = "";
+                try {
+                    encryptedEmail = Cryptographic.encrypt(user.getEmail());
+                } catch (GeneralSecurityException e) {
+                    throw new RuntimeException(e);
+                }
+                addTokenToCookie(response, accessToken, refreshToken, encryptedEmail);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
@@ -346,7 +364,7 @@ public class AuthenticationService {
      * @param accessToken The JWT access token to be stored in the access token cookie.
      * @param refreshToken The JWT refresh token to be stored in the refresh token cookie.
      */
-    private void addTokenToCookie(HttpServletResponse response, String accessToken, String refreshToken) {
+    private void addTokenToCookie(HttpServletResponse response, String accessToken, String refreshToken, String encryptedEmail) {
         Cookie accessTokenCookie = new Cookie("access_token", accessToken);
         accessTokenCookie.setHttpOnly(false);
         accessTokenCookie.setSecure(false); // Rubah menjadi true jika menggunakan HTTPS
@@ -359,8 +377,14 @@ public class AuthenticationService {
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(30 * 24 * 60 * 60); // 30 days
 
+        Cookie encryptEmail = new Cookie("mail", encryptedEmail);
+        encryptEmail.setHttpOnly(false);
+        encryptEmail.setSecure(false); // Rubah menjadi true jika menggunakan HTTPS
+        refreshTokenCookie.setPath("/");
+
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
+        response.addCookie(encryptEmail);
     }
 
     /**

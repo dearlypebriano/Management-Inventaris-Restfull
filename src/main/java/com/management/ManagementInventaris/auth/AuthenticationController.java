@@ -60,7 +60,13 @@ public class AuthenticationController {
     public ResponseEntity<UserProfile> findUserByEmail(
             @Valid @Email @PathVariable String email
     ) {
-        UserProfile projection = service.findUserByEmail(email);
+        String decryptEmail = "";
+        try {
+            decryptEmail = Cryptographic.decrypt(email);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+        UserProfile projection = service.findUserByEmail(decryptEmail);
         return ResponseEntity.status(HttpStatus.OK).body(projection);
     }
 

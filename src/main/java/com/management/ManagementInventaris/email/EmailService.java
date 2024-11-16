@@ -15,4 +15,11 @@ public interface EmailService {
      * @return
      */
     String sendMailWithAttachment(EmailDetails details);
+
+    /**
+     *
+     * @param details untuk menampung email
+     * @return
+     */
+    String sendApiKeyToEmail(EmailDetails details);
 }

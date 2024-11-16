@@ -1,8 +1,10 @@
 package com.management.ManagementInventaris;
 
+import com.management.ManagementInventaris.utils.Cryptographic;
 import com.management.ManagementInventaris.utils.Zone;
 import org.junit.jupiter.api.Test;
 
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -11,26 +13,9 @@ import java.time.format.DateTimeFormatter;
 public class Yeaisa {
 
     @Test
-    void test() {
-        ZonedDateTime now = ZonedDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        String formattedDate = now.format(formatter) + " " + Zone.getZoneLabel(now);
-        System.out.println("Formatted Date: " + formattedDate);
-    }
-
-    @Test
-    void sdoa() {
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println("SDJS: " + now);
-    }
-
-    @Test
-    void sasa() {
-        ZonedDateTime dateTime = ZonedDateTime.now(ZoneId.systemDefault());
-        String zoneId = Zone.getZoneLabel(dateTime);
-
-        String anu = dateTime + " " + zoneId;
-        System.out.println(anu);
+    void testAja() throws GeneralSecurityException {
+        String encrypted = Cryptographic.encrypt("dearlyfebrianoi@gmail.com");
+        System.out.println("Ini adalh Encrypt nya: " + encrypted);
+        System.out.println("Ini adalh Decrypt nya: " + Cryptographic.decrypt(encrypted));
     }
 }
