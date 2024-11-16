@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReviewStoreRequest {
 
+    private String storeId;
+
     private String message;
 
     private Integer rating;

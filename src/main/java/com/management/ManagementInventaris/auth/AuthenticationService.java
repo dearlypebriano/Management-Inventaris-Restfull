@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -104,6 +105,7 @@ public class AuthenticationService {
     private final RegencyService regencyService;
     private final DistrictService districtService;
     private final VillageService villageService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private MinioClient minioClient;
@@ -151,7 +153,7 @@ public class AuthenticationService {
      */
     @Transactional
     @CacheEvict(value = "user", allEntries = true)
-    @CachePut(value = "user", key = "#user.email")
+    @CachePut(value = "user", key = "#request.email")
     public AuthenticationResponse register(RegisterRequest request, HttpServletResponse response) {
         if (repository.findByEmail(request.getEmail()).isPresent()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Registration Failed. Email Already Exists");
 
@@ -186,6 +188,9 @@ public class AuthenticationService {
         saveUserToken(savedUser, jwtToken);
 
         addTokenToCookie(response, jwtToken, refreshToken);
+
+        AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
+        redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
@@ -237,7 +242,7 @@ public class AuthenticationService {
      */
     @Transactional
     @CacheEvict(value = "user", allEntries = true)
-    @CachePut(value = "user", key = "#user.email")
+    @CachePut(value = "user", key = "#request.email")
     public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
@@ -257,6 +262,9 @@ public class AuthenticationService {
         saveUserToken(user, jwtToken);
 
         addTokenToCookie(response, jwtToken, refreshToken);
+
+        AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
+        redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
 
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)

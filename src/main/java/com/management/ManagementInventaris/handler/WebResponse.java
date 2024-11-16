@@ -1,6 +1,7 @@
 package com.management.ManagementInventaris.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.management.ManagementInventaris.store.review.ReviewStoreResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

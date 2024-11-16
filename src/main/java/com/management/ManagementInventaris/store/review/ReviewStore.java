@@ -3,6 +3,7 @@ package com.management.ManagementInventaris.store.review;
 import com.management.ManagementInventaris.store.Store;
 import com.management.ManagementInventaris.user.User;
 import com.management.ManagementInventaris.utils.DateTimeUtil;
+import com.management.ManagementInventaris.validations.NoToxic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,7 @@ public final class ReviewStore implements Serializable {
     @Column(name = "rating")
     private Integer rating = 0;
 
+    @NoToxic(message = "Your review contains inappropriate language!")
     @Column(name = "message", length = 1000)
     private String message;
 
@@ -47,7 +49,7 @@ public final class ReviewStore implements Serializable {
     private List<ReviewRating> reviewRatings = new ArrayList<>();
 
     @PrePersist
-    protected void onCreate() {
+    private void onCreate() {
         this.createdAt = DateTimeUtil.getCurrentDateTime(ZoneId.systemDefault());
     }
 }

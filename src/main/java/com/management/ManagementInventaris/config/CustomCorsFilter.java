@@ -13,7 +13,7 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CustomCorsFilter implements Filter {
 
-    private static final String FRONTEND_ROUTE = "http://localhost:8000";
+    private static final String FRONTEND_ROUTE = "http://localhost:3000";
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {

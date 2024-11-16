@@ -129,8 +129,6 @@ public final class Cryptographic {
     }
 
     private static void validateKey() {
-        if (Cryptographic.SECRET_KEY.length() != REQUIRED_KEY_LENGTH) {
-            throw new IllegalArgumentException("Key must be 16 characters long.");
-        }
+        if (Cryptographic.SECRET_KEY.length() != REQUIRED_KEY_LENGTH) throw new IllegalArgumentException("Key must be 16 characters long.");
     }
 }
