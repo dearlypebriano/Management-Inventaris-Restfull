@@ -57,8 +57,12 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public String sendApiKeyToEmail(EmailDetails details) {
+    public String sendApiKeyToEmail(String apiKey) {
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setRecipient("dearlyfebrianoi@gmail.com");
+        emailDetails.setSubject("New API Key Generated");
+        emailDetails.setMsgBody("A new API key has been generated: " + apiKey);
 
-        return "";
+        return sendSimpleMail(emailDetails);
     }
 }

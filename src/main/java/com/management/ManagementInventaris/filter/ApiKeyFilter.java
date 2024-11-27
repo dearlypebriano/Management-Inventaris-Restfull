@@ -1,5 +1,6 @@
 package com.management.ManagementInventaris.filter;
 
+import com.management.ManagementInventaris.email.EmailService;
 import com.management.ManagementInventaris.key.ApiKey;
 import com.management.ManagementInventaris.key.ApiKeyRepository;
 import com.management.ManagementInventaris.key.ApiKeyService;
@@ -26,6 +27,9 @@ public class ApiKeyFilter implements Filter {
 
     @Autowired
     private ApiKeyService apiKeyService;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final List<String> URL_PATTERNS = Arrays.asList(
             "/swagger-ui.html",
@@ -104,7 +108,9 @@ public class ApiKeyFilter implements Filter {
                         apiKeyRepository.save(key);
                         apiKeyRepository.delete(key);
 
-                        apiKeyService.generateUniqueApiKey();
+                        String newKey = apiKeyService.generateUniqueApiKey();
+                        emailService.sendApiKeyToEmail(newKey);
+                        return;
                     }
                 }
             }

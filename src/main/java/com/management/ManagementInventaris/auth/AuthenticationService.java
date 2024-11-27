@@ -380,7 +380,8 @@ public class AuthenticationService {
         Cookie encryptEmail = new Cookie("mail", encryptedEmail);
         encryptEmail.setHttpOnly(false);
         encryptEmail.setSecure(false); // Rubah menjadi true jika menggunakan HTTPS
-        refreshTokenCookie.setPath("/");
+        encryptEmail.setPath("/");
+        encryptEmail.setMaxAge(100 * 24 * 60 * 60); // 100 days
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);

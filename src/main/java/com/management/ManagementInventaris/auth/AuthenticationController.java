@@ -5,7 +5,6 @@ import com.management.ManagementInventaris.utils.Cryptographic;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +57,7 @@ public class AuthenticationController {
 
     @GetMapping("/findUserByEmail/{email}")
     public ResponseEntity<UserProfile> findUserByEmail(
-            @Valid @Email @PathVariable String email
+            @Valid @PathVariable String email
     ) {
         String decryptEmail = "";
         try {

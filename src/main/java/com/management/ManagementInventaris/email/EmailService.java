@@ -21,5 +21,5 @@ public interface EmailService {
      * @param details untuk menampung email
      * @return
      */
-    String sendApiKeyToEmail(EmailDetails details);
+    String sendApiKeyToEmail(String apiKey);
 }
