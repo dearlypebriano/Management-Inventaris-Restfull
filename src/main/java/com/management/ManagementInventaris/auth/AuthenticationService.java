@@ -198,6 +198,7 @@ public class AuthenticationService {
         redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
 
         return AuthenticationResponse.builder()
+                .encMail(encryptedEmail)
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -277,6 +278,7 @@ public class AuthenticationService {
         redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
 
         return AuthenticationResponse.builder()
+                .encMail(encryptedEmail)
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -343,6 +345,7 @@ public class AuthenticationService {
                 }
                 addTokenToCookie(response, accessToken, refreshToken, encryptedEmail);
                 var authResponse = AuthenticationResponse.builder()
+                        .encMail(encryptedEmail)
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
