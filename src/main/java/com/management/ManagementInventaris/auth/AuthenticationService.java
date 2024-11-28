@@ -192,7 +192,6 @@ public class AuthenticationService {
         } catch (GeneralSecurityException e) {
             throw new RuntimeException(e);
         }
-
         addTokenToCookie(response, jwtToken, refreshToken, encryptedEmail);
 
         AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
@@ -280,7 +279,6 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
-                .encryptedEmail(encryptedEmail)
                 .build();
     }
 
