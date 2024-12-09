@@ -43,11 +43,16 @@ public class ReviewStoreService implements IReviewStoreService {
         Store storeOpt = storeRepository.findById(request.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("Store not found: " + request.getStoreId()));
 
+        double rating = request.getRating();
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
+
         ReviewStore reviewStore = new ReviewStore();
         reviewStore.setId(UUID.randomUUID().toString());
         reviewStore.setStore(storeOpt);
         reviewStore.setUser(userComment);
-        reviewStore.setRating(request.getRating());
+        reviewStore.setRating(rating);
         reviewStore.setMessage(request.getMessage());
         reviewStoreRepository.save(reviewStore);
 

@@ -36,7 +36,7 @@ public final class ReviewStore implements Serializable {
     private User user;
 
     @Column(name = "rating")
-    private Integer rating = 0;
+    private Double rating = 0.0;
 
     @NoToxic(message = "Your review contains inappropriate language!")
     @Column(name = "message", length = 1000)

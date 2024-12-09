@@ -21,7 +21,7 @@ public class ProductDTO {
     private BigDecimal price;
     private String priceRange;
     private Integer quantity;
-    private String rating;
+    private Double rating;
     private List<Variant> variants;
     private List<Categories> categories;
     private List<String> imageUrls;

@@ -21,7 +21,7 @@ public class ReviewStoreResponse implements Serializable {
 
     private String message;
 
-    private Integer rating;
+    private Double rating;
 
     private String storeName;
 

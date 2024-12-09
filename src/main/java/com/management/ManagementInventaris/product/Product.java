@@ -59,7 +59,8 @@ public final class Product implements Serializable {
 
     private Integer viewers = 0;
 
-    private String rating = "0.0.0.0.0";
+    @Column(name = "rating", nullable = false)
+    private Double rating = 0.0;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Variant> variants = new ArrayList<>();
@@ -100,6 +101,9 @@ public final class Product implements Serializable {
     )
     private Set<User> ratingUsers = new HashSet<>();
 
+    @Column(name = "rating_count", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer ratingCount = 0;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_viewers",
@@ -108,8 +112,15 @@ public final class Product implements Serializable {
     )
     private Set<User> viewedUsers = new HashSet<>();
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "product_user_ratings", joinColumns = @JoinColumn(name = "product_id"))
+    @MapKeyJoinColumn(name = "user_id")
+    @Column(name = "rating_value")
+    private Map<User, Double> userRatings = new HashMap<>();
+
     @Version
     private Long version;
+
 
     public List<Variant> getVariantsInitialized() {
         Hibernate.initialize(variants);

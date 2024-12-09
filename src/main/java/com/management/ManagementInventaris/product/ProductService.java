@@ -69,9 +69,6 @@ public class ProductService implements IProductService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -79,9 +76,6 @@ public class ProductService implements IProductService {
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private BarcodeService barcodeService;
@@ -102,6 +96,7 @@ public class ProductService implements IProductService {
     private String bucketName;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+    private static final int MINIMUM_VOTE_THRESHOLD = 10;
 
     /**
      * Creates a new product with the specified details and associated images.
@@ -178,7 +173,7 @@ public class ProductService implements IProductService {
             Product product = Product.builder()
                     .id(UUID.randomUUID().toString())
                     .title(request.getTitle())
-                    .rating("0.0")
+                    .rating(0.0)
                     .price(request.getPrice())
                     .quantity(request.getQuantity())
                     .description(request.getDescription())
@@ -588,32 +583,31 @@ public class ProductService implements IProductService {
      * <p>This method updates the product's rating and saves the changes to the repository.</p>
      *
      * @param productId the ID of the product to toggle the rating for
-     * @param increment true to like the product, false to dislike it
+     * @param userRating value rating for user
      * @return the updated {@link Product} object
      * @throws ResponseStatusException if the product is not found or if the rating action is invalid
      */
     @Override
     @SneakyThrows
     @Transactional
-    public Product toggleRating(String productId, boolean increment) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    public Product toggleRating(String productId, double userRating) {
+        if (userRating < 1.0 || userRating > 5.0) throw new IllegalArgumentException("Rating harus berada di antara 1.0 dan 5.0");
         User user = userDetailToken.dataUserEmail();
-        if (product.getRatingUsers().contains(user)) {
-            if (increment) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already liked the product");
-            } else {
-                product.getRatingUsers().remove(user);
-                updateProductRating(product, false);
-            }
-        } else {
-            if (increment) {
-                product.getRatingUsers().add(user);
-                updateProductRating(product, true);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has not liked the product yet");
-            }
-        }
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found!"));
+
+        Map<User, Double> userRatings = product.getUserRatings();
+        userRatings.put(user, userRating);
+
+        // Hitung rata-rata rating dari pengguna
+        double averageRating = userRatings.values().stream().mapToDouble(Double::doubleValue).sum();
+        int totalVotes = userRatings.size();
+
+        double updatedRating = averageRating / totalVotes;
+
+        if (updatedRating >= 4.5 && totalVotes < MINIMUM_VOTE_THRESHOLD) product.setRating(2.0);
+        product.setRating(updatedRating);
+        product.setRatingCount(totalVotes);
+        product.setUserRatings(userRatings);
 
         return productRepository.save(product);
     }

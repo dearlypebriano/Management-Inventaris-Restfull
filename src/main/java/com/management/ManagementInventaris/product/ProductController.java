@@ -107,8 +107,8 @@ public class ProductController {
      * @return ResponseEntity containing the updated ProductResponse after toggling the rating.
      */
     @PostMapping(path = "/{productId}/toggleRating")
-    public ResponseEntity<ProductResponse> toggleRating(@PathVariable String productId, @RequestParam boolean increment) {
-        Product updateProduct = productService.toggleRating(productId, increment);
+    public ResponseEntity<ProductResponse> toggleRating(@PathVariable String productId, @RequestParam double userRating) {
+        Product updateProduct = productService.toggleRating(productId, userRating);
         ProductResponse response = productService.toProductResponse(updateProduct);
         return ResponseEntity.ok(response);
     }

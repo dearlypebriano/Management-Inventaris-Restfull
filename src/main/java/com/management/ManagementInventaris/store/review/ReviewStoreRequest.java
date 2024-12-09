@@ -15,5 +15,5 @@ public class ReviewStoreRequest {
 
     private String message;
 
-    private Integer rating;
+    private Double rating;
 }

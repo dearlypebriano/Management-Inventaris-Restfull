@@ -47,7 +47,7 @@ public class ProductResponse implements Serializable {
 
     private Integer viewers;
 
-    private String rating;
+    private Double rating;
 
     private List<VariantInfo> variants;
 

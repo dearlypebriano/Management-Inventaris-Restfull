@@ -77,7 +77,7 @@ public interface IProductService {
      * @param increment true to like the product, false to dislike it
      * @return the updated {@link Product}
      */
-    Product toggleRating(String productId, boolean increment);
+    Product toggleRating(String productId, double userRating);
 
     /**
      * Retrieves a product by its ID and returns the corresponding product response.
@@ -112,27 +112,6 @@ public interface IProductService {
     void checkStockAndNotify();
 
     boolean isCouponValid(Coupon coupon);
-
-    /**
-     * Updates the rating of a product by incrementing or decrementing the rating value.
-     *
-     * <p>This method adjusts the product's rating string by updating the last component based on the provided flag.</p>
-     *
-     * @param product the product to update the rating for
-     * @param increment true to increment the rating, false to decrement it
-     */
-    default void updateProductRating(Product product, boolean increment) {
-        String[] ratings = product.getRating().split("\\.");
-        int lastIndex = ratings.length - 1;
-
-        if (increment) {
-            ratings[lastIndex] = String.valueOf(Integer.parseInt(ratings[lastIndex]) + 1);
-        } else {
-            ratings[lastIndex] = String.valueOf(Math.max(0, Integer.parseInt(ratings[lastIndex]) - 1));
-        }
-
-        product.setRating(String.join(".", ratings));
-    }
 
     /**
      * Deletes the image files and barcode associated with the given product from MinIO storage.
@@ -175,17 +154,6 @@ public interface IProductService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete image from MinIO: " + e.getMessage());
         }
-    }
-
-    /**
-     * Returns the formatted rating of a product, displaying only the first two components of the rating string.
-     *
-     * @param product the product to get the formatted rating for
-     * @return the formatted rating string
-     */
-    default String getFormattedRating(Product product) {
-        String[] ratings = product.getRating().split("\\.");
-        return ratings.length > 1? ratings[0] + "." + ratings[1] : ratings[0];
     }
 
     default BigDecimal applyDiscount(BigDecimal originalPrice, Coupon coupon) {
@@ -244,7 +212,7 @@ public interface IProductService {
                 .description(product.getDescription())
                 .quantity(product.getQuantity())
                 .viewers(product.getViewers())
-                .rating(getFormattedRating(product))
+                .rating(product.getRating())
                 .variants(product.getVariants().stream()
                         .map(variant -> VariantInfo.builder()
                                 .name(variant.getName())

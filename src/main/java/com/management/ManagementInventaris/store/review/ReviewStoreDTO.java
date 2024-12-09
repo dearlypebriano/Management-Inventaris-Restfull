@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ReviewStoreDTO {
     private String id;
 
-    private Integer rating;
+    private Double rating;
 
     private String comment;
 

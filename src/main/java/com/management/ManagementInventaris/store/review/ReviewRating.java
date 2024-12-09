@@ -34,7 +34,7 @@ public class ReviewRating implements Serializable {
     private User user;
 
     @Column(name = "rating", nullable = false)
-    private int rating; // e.g., 1–5 stars
+    private Double rating; // e.g., 1–5 stars
 
     @Column(name = "created_at", nullable = false)
     private String createdAt;
