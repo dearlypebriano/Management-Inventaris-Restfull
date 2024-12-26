@@ -42,6 +42,12 @@ public class LogoutService implements LogoutHandler {
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);
                 }
+                if (cookie.getName().equals("mail")) {
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
             }
         }
         SecurityContextHolder.clearContext();
