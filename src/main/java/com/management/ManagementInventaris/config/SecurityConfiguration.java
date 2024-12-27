@@ -27,6 +27,10 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
+            "/ws/**",
+            "/topic/**",
+            "/app/**",
+            "/send/**",
             "/actuator",
             "/actuator/**",
             "/api/v1/auth/**",
@@ -48,7 +52,6 @@ public class SecurityConfiguration {
             "/api/v1/auth/findUserById/**",
             "/api/minio/**",
             "/api/v1/genders/**",
-            "/api/v1/employees/list?view=public",
             "/sendMail",
             "/sendMailWithAttachment",
             "/v2/api-docs",

@@ -1,6 +1,7 @@
 package com.management.ManagementInventaris.employee;
 
 import com.management.ManagementInventaris.handler.WebResponse;
+import com.management.ManagementInventaris.utils.Cryptographic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 @RestController
@@ -38,7 +40,13 @@ public class EmployeeController {
 
     @DeleteMapping(path = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteEmployee(@PathVariable String id) {
-        employeeService.deleteEmployee(id);
+        String decryptId;
+        try {
+            decryptId = Cryptographic.decrypt(id);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+        employeeService.deleteEmployee(decryptId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

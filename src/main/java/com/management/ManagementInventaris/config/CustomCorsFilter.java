@@ -31,6 +31,13 @@ public class CustomCorsFilter implements Filter {
             response.setHeader("Access-Control-Allow-Origin", "");
         }
 
+        if ("WebSocket".equalsIgnoreCase(request.getHeader("Upgrade"))) {
+            if (FRONTEND_ROUTE.equalsIgnoreCase(origin)) {
+                response.setHeader("Access-Control-Allow-Origin", origin);
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+            }
+        }
+
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {

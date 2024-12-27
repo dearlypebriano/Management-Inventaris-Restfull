@@ -91,7 +91,7 @@ public class ApiKeyFilter implements Filter {
 
         String servletPath = httpRequest.getServletPath();
 
-        if (matchesAnyPattern(servletPath) || servletPath.startsWith("/api/minio/download/")) {
+        if (matchesAnyPattern(servletPath) || servletPath.startsWith("/api/minio/download/") || servletPath.startsWith("/ws/**")) {
             chain.doFilter(request, response);
             return;
         }
