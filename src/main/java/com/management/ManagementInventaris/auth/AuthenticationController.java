@@ -25,17 +25,19 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @Valid @RequestBody RegisterRequest request,
+            HttpServletRequest httpServletRequest,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(service.register(request, response));
+        return ResponseEntity.ok(service.register(request, httpServletRequest, response));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request,
+            HttpServletRequest httpServletRequest,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(service.authenticate(request, response));
+        return ResponseEntity.ok(service.authenticate(request, httpServletRequest, response));
     }
 
     @PostMapping("/refresh-token")

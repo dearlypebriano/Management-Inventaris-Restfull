@@ -95,6 +95,12 @@ public class User implements UserDetails {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "ip_address", nullable = false)
+    private String ipAddress = "0.0.0.0";
+
+    @Column(name = "user_agent", nullable = false)
+    private String userAgent = "N/A";
+
     @Column(name = "account_non_locked", nullable = false)
     private Boolean accountNonLocked = true;
 

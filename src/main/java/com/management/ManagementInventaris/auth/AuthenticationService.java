@@ -19,6 +19,7 @@ import com.management.ManagementInventaris.user.User;
 import com.management.ManagementInventaris.user.UserProfile;
 import com.management.ManagementInventaris.user.UserRepository;
 import com.management.ManagementInventaris.utils.Cryptographic;
+import com.management.ManagementInventaris.utils.DeviceInfoService;
 import com.management.ManagementInventaris.utils.ImageCompressor;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -46,6 +47,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -105,6 +108,7 @@ public class AuthenticationService {
     private final RegencyService regencyService;
     private final DistrictService districtService;
     private final VillageService villageService;
+    private final DeviceInfoService deviceInfoService;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
@@ -154,7 +158,7 @@ public class AuthenticationService {
     @Transactional
     @CacheEvict(value = "user", allEntries = true)
     @CachePut(value = "user", key = "#request.email")
-    public AuthenticationResponse register(RegisterRequest request, HttpServletResponse response) {
+    public AuthenticationResponse register(RegisterRequest request, HttpServletRequest httpRequest, HttpServletResponse response) {
         if (repository.findByEmail(request.getEmail()).isPresent()) throw new ResponseStatusException(HttpStatus.CONFLICT, "Registration Failed. Email Already Exists");
 
         Gender gender = genderRepository.findByName(request.getGender().getName()).orElse(null);
@@ -164,6 +168,10 @@ public class AuthenticationService {
         Village village = villageService.getVillageByDistrictAndNames(province.getName(), regency.getName(), district.getName(), request.getVillageName().getName());
 
         long cleanedPhone = Long.parseLong(cleanPhoneNumber(request.getPhone()));
+
+        String ipAddress = httpRequest.getRemoteAddr();
+        String macAddress = getMacAddress(ipAddress);
+        String userAgent = httpRequest.getHeader("User-Agent");
 
         var user = User.builder()
                 .id(UUID.randomUUID().toString())
@@ -179,6 +187,8 @@ public class AuthenticationService {
                 .district(district)
                 .village(village)
                 .accountNonLocked(true)
+                .ipAddress(ipAddress)
+                .userAgent(userAgent)
                 .build();
 
         setDefaultProfile(user);
@@ -202,6 +212,22 @@ public class AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    private String getMacAddress(String ipAddress) {
+        try {
+            InetAddress address = InetAddress.getByName(ipAddress);
+            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(address);
+            byte[] mac = networkInterface.getHardwareAddress();
+            if (mac == null) return "Unknown";
+            StringBuilder macAddress = new StringBuilder();
+            for (byte b : mac) {
+                macAddress.append(String.format("%02x", b));
+            }
+            return macAddress.substring(0, macAddress.length() - 1);
+        } catch (Exception e) {
+            return "Unknown";
+        }
     }
 
     /**
@@ -249,7 +275,7 @@ public class AuthenticationService {
     @Transactional
     @CacheEvict(value = "user", allEntries = true)
     @CachePut(value = "user", key = "#request.email")
-    public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -273,6 +299,7 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
         addTokenToCookie(response, jwtToken, refreshToken, encryptedEmail);
+        deviceInfoService.updateUserDeviceInfo(user.getEmail(), httpServletRequest);
 
         AuthenticationDTO authDTO = AuthenticationDTO.fromEntity(user);
         redisTemplate.opsForValue().set("user:" + authDTO.getEmail(), authDTO);
@@ -297,8 +324,7 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
+        if (validUserTokens.isEmpty()) return;
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
