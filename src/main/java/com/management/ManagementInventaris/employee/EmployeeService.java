@@ -93,7 +93,7 @@ public class EmployeeService {
 
     private final String server = serverHost + ":" + serverPort;
 
-    private final AtomicInteger counter = new AtomicInteger(110);
+    private final AtomicInteger counter = new AtomicInteger(1000);
     public int generateSequentialNip() {
         return counter.getAndIncrement();
     }

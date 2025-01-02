@@ -20,7 +20,7 @@ def perform_restore():
 
     latest_file = max(decrypted_files, key=lambda f: os.path.getmtime(os.path.join(decrypt_dir, f)))
     backup_file = os.path.join(decrypt_dir, latest_file)
-    target_db = os.getenv('DB_TARGET', 'inventaris_test')
+    target_db = os.getenv('DB_TARGET', 'inventaris')
 
     try:
         # Set the PGPASSWORD environment variable for pg_restore

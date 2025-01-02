@@ -12,7 +12,6 @@ import com.management.ManagementInventaris.location.village.Village;
 import com.management.ManagementInventaris.location.village.VillageService;
 import com.management.ManagementInventaris.user.Role;
 import com.management.ManagementInventaris.user.User;
-import com.management.ManagementInventaris.user.UserRepository;
 import com.management.ManagementInventaris.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +39,6 @@ public class StoreService {
 
     @Autowired
     private StoreAccountingRepository storeAccountingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ProvinceService provinceService;

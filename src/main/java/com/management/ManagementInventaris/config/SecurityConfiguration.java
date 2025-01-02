@@ -31,6 +31,7 @@ public class SecurityConfiguration {
             "/topic/**",
             "/app/**",
             "/send/**",
+            "/queue/**",
             "/actuator",
             "/actuator/**",
             "/api/v1/auth/**",
