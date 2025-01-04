@@ -1,9 +1,9 @@
-# API Gender Specification v6.4.5
+# API Gender Specification v7.0.0
 
 ## Introduction
 
 - API Gender Specification
-- v6.4.5
+- v7.0.0
 
 ## Create New Gender:
 - Endpoint : `http://localhost:5050/api/v1/genders`

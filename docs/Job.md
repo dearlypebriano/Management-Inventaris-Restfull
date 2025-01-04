@@ -1,9 +1,9 @@
-# API Job Specificaation v6.4.5
+# API Job Specificaation v7.0.0
 
 ## Introduction
 
 - API Job Specificaation
-- v6.4.5
+- v7.0.0
 
 ## Create New Job
 

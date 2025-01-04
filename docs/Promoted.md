@@ -1,9 +1,9 @@
-# API Promoted Product Specification v6.4.5
+# API Promoted Product Specification v7.0.0
 
 ## Introduction
 
 - API Promoted Product Specification
-- version: `v6.4.5`
+- version: `v7.0.0`
 
 ## Created New Promoted Product
 

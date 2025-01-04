@@ -1,9 +1,9 @@
-# API Product Specification v6.4.5
+# API Product Specification v7.0.0
 
 ## Introduction
 
 - API Product Specification
-- version: `v6.4.5`
+- version: `v7.0.0`
 
 ## Create New Product
 

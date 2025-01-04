@@ -1,4 +1,4 @@
-# API Mail Sender Specivication v6.4.5
+# API Mail Sender Specivication v7.0.0
 
 ## Configuration Your Email Admin In File Management-Inventaris-Restfull/src/main/resources/application.properties
 

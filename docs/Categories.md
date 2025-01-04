@@ -1,9 +1,9 @@
-# API Categories Specification v6.4.5
+# API Categories Specification v7.0.0
 
 ## Introduction
 
 - API Categories Specification
-- v6.4.5
+- v7.0.0
 
 ## Create New Categories
 

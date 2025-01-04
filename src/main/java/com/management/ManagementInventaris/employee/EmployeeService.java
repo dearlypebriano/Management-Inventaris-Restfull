@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -224,7 +225,7 @@ public class EmployeeService {
                 throw new RuntimeException("Failed to upload image: " + e.getMessage());
             }
         }
-
+        
         employeeRepository.save(employee);
 
         EmployeeDTO employeeDTO = EmployeeDTO.fromEntity(employee);

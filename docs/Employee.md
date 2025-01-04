@@ -1,9 +1,9 @@
-# API Employee Specification v6.4.5
+# API Employee Specification v7.0.0
 
 ## Introduction
 
 - API Employee Specification
-- v6.4.5
+- v7.0.0
 
 ## Create New Employee
 
